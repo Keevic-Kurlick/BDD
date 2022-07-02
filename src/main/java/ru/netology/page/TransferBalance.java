@@ -4,10 +4,12 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import lombok.Value;
 import lombok.experimental.NonFinal;
+import org.openqa.selenium.Keys;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
+
 @Value
 public class TransferBalance {
     SelenideElement header = $("h1");
@@ -22,11 +24,12 @@ public class TransferBalance {
         header.shouldHave(text("Пополнение карты"));
     }
 
-    public DashboardPage transferBalance(String amount, String cardNumber) {
+    public DashboardPage transferBalance(String amount, String fromCardNumber) {
+        amountInput.sendKeys(Keys.CONTROL, "a", Keys.DELETE);
         amountInput.setValue(amount);
-        fromInput.sendKeys(cardNumber);
+        fromInput.sendKeys(Keys.CONTROL, "a", Keys.DELETE);
+        fromInput.sendKeys(fromCardNumber);
         transferButton.click();
         return new DashboardPage();
     }
-
 }
