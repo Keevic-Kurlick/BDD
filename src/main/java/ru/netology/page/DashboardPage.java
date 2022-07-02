@@ -20,7 +20,7 @@ public class DashboardPage {
     ElementsCollection buttons = $$("div");
     SelenideElement reloadButton = $("[data-test-id= action-reload]");
 
-    String balanceStart = "баланс: ";
+    String balanceStart = ", баланс: ";
     String balanceFinish = " р.";
 
     public DashboardPage() {
@@ -33,11 +33,6 @@ public class DashboardPage {
         return extractBalance(text);
     }
 
-    public String getCardNumber(String id) {
-        val text = cards.findBy(Condition.attributeMatching("data-test-id", id)).text();
-        return extractCard(text);
-    }
-
     private int extractBalance(String text) {
         val start = text.indexOf(balanceStart);
         val finish = text.indexOf(balanceFinish);
@@ -45,13 +40,18 @@ public class DashboardPage {
         return Integer.parseInt(value);
     }
 
+    public String getCardNumber(String id) {
+        val text = cards.findBy(Condition.attributeMatching("data-test-id", id)).text();
+        return extractCard(text);
+    }
+
     private String extractCard(String text) {
         String[] verse = text.split(balanceStart);
         return verse[0];
     }
 
-    public TransferBalance transferBalance(String id) {
-        buttons.findBy(attributeMatching("data-test-id", id)).find("button").click();
+    public TransferBalance transferBalance(String cardIdToTransfer) {
+        buttons.findBy(attributeMatching("data-test-id", cardIdToTransfer)).find("button").click();
         return new TransferBalance();
     }
 }

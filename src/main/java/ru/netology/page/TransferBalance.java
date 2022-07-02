@@ -24,12 +24,11 @@ public class TransferBalance {
         header.shouldHave(text("Пополнение карты"));
     }
 
-    public DashboardPage transferBalance(String amount, String fromCardNumber) {
+    public void transferBalance(String amount, String fromCardNumber) {
         amountInput.sendKeys(Keys.CONTROL, "a", Keys.DELETE);
         amountInput.setValue(amount);
         fromInput.sendKeys(Keys.CONTROL, "a", Keys.DELETE);
         fromInput.sendKeys(fromCardNumber);
         transferButton.click();
-        return new DashboardPage();
     }
 }

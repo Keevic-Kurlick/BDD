@@ -1,13 +1,13 @@
 package ru.netology.data;
 
-import com.github.javafaker.Faker;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.experimental.NonFinal;
 
 import java.util.ArrayList;
-import java.util.Locale;
+import java.util.List;
 
 public class DataHelper {
 
@@ -17,35 +17,36 @@ public class DataHelper {
         String login;
         String password;
         @NonFinal
-        ArrayList<Card> cards;
+        List<Card> cards = new ArrayList<>();
 
         public static AuthInfo getAuthInfo() {
             return new AuthInfo("vasya", "qwerty123");
         }
 
-        public static AuthInfo getOtherAuthInfo() {
-            return new AuthInfo("petya", "123qwerty");
+        public void setCard(Card card) {
+            cards.add(card);
         }
 
-        public Card getFirstCard() { return new Card("92df3f1c-a033-48e6-8390-206f6b1f56c0",
-                "5559000000000001", 10_000);
+        public Card getCard(int number) {
+            return cards.get(number);
         }
-        public Card getSecondCard() { return new Card("0f3f5c2a-249e-4c3d-8287-09f7a039391d",
-                "5559000000000002", 10_000); }
 
-        public static AuthInfo generateAuthInfo(String locale) {
-            Faker faker = new Faker((new Locale(locale)));
-            return new AuthInfo(faker.name().fullName(), faker.internet().password());
+        public String firstCardId() {
+            return "92df3f1c-a033-48e6-8390-206f6b1f56c0";
+        }
+
+        public String secondCardId() {
+            return "0f3f5c2a-249e-4c3d-8287-09f7a039391d";
         }
     }
 
-    @Value
+    @Data
     @RequiredArgsConstructor
     @AllArgsConstructor
     public static class Card {
-        String cardId;
         String cardNumber;
-        @NonFinal
+        public final static String FIRST_CARD_NUMBER = "5559000000000001";
+        public final static String SECOND_CARD_NUMBER = "5559000000000002";
         int initBalance;
     }
 
@@ -53,8 +54,8 @@ public class DataHelper {
     public static class VerificationCode {
         String code;
 
-        public static VerificationCode getVerificationCodeFor(AuthInfo authInfo) {
-            return new VerificationCode("12345");
+        public static String getVerificationCodeFor(AuthInfo authInfo) {
+            return "12345";
         }
     }
 }

@@ -12,12 +12,12 @@ public class VerificationPage {
     SelenideElement codeField = $("[data-test-id=code] input");
     SelenideElement verifyButton = $("[data-test-id=action-verify]");
 
-    public VerificationPage(){
+    public VerificationPage() {
         codeField.shouldBe(visible);
     }
 
-    public DashboardPage validVerify(DataHelper.VerificationCode code) {
-        codeField.setValue(code.getCode());
+    public DashboardPage validVerify(DataHelper.AuthInfo authInfo) {
+        codeField.setValue(DataHelper.VerificationCode.getVerificationCodeFor(authInfo));
         verifyButton.click();
         return new DashboardPage();
     }
