@@ -1,6 +1,7 @@
 package ru.netology.data;
 
 import com.github.javafaker.Faker;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.experimental.NonFinal;
@@ -18,10 +19,6 @@ public class DataHelper {
         @NonFinal
         ArrayList<Card> cards;
 
-        public void addCard(Card card) {
-            cards.add(card);
-        }
-
         public static AuthInfo getAuthInfo() {
             return new AuthInfo("vasya", "qwerty123");
         }
@@ -29,6 +26,12 @@ public class DataHelper {
         public static AuthInfo getOtherAuthInfo() {
             return new AuthInfo("petya", "123qwerty");
         }
+
+        public Card getFirstCard() { return new Card("92df3f1c-a033-48e6-8390-206f6b1f56c0",
+                "5559000000000001", 10_000);
+        }
+        public Card getSecondCard() { return new Card("0f3f5c2a-249e-4c3d-8287-09f7a039391d",
+                "5559000000000002", 10_000); }
 
         public static AuthInfo generateAuthInfo(String locale) {
             Faker faker = new Faker((new Locale(locale)));
@@ -38,8 +41,10 @@ public class DataHelper {
 
     @Value
     @RequiredArgsConstructor
-    public class Card {
-        String number;
+    @AllArgsConstructor
+    public static class Card {
+        String cardId;
+        String cardNumber;
         @NonFinal
         int initBalance;
     }

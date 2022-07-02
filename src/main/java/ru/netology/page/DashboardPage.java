@@ -18,12 +18,14 @@ public class DashboardPage {
     ElementsCollection cards = $$(".list__item div");
     SelenideElement header = $("h1");
     ElementsCollection buttons = $$("div");
+    SelenideElement reloadButton = $("[data-test-id= action-reload]");
 
     String balanceStart = "баланс: ";
     String balanceFinish = " р.";
 
     public DashboardPage() {
         header.shouldHave(text("Ваши карты"));
+        reloadButton.click();
     }
 
     public int getCardBalance(String id) {
