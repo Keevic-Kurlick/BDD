@@ -59,4 +59,24 @@ public class transferBalanceTest {
         Assertions.assertEquals(initialBalanceSecondCard + 350,
                 dashboard.getCardBalance(user.getSecondCard().getCardId()));
     }
+
+    @Test
+    void shouldTransferCardBalance() {
+        var transfer = dashboard.transferBalance(user.getSecondCard().getCardId());
+        String amount = String.valueOf(initialBalanceFirstCard);
+        transfer.transferBalance(amount, user.getFirstCard().getCardNumber());
+
+        Assertions.assertEquals(dashboard.getCardBalance(user.getFirstCard().getCardId()), 0);
+        Assertions.assertEquals(dashboard.getCardBalance(user.getSecondCard().getCardId()),
+                initialBalanceFirstCard + initialBalanceSecondCard);
+    }
+
+    @Test
+    void shouldNotTransferMoreThanCardBalance() {
+        var transfer = dashboard.transferBalance(user.getSecondCard().getCardId());
+        String amount = String.valueOf(initialBalanceFirstCard + 1);
+        transfer.transferBalance(amount, user.getFirstCard().getCardNumber());
+
+        Assertions.assertTrue(dashboard.getCardBalance(user.getFirstCard().getCardId())>=0);
+    }
 }
