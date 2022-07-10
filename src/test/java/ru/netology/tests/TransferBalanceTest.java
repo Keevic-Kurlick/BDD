@@ -11,6 +11,8 @@ import static com.codeborne.selenide.Selenide.open;
 public class TransferBalanceTest {
 
     private static DataHelper.AuthInfo user;
+    private final DataHelper.Card firstCard = DataHelper.Card.getFirstCardFor(user);
+    private final DataHelper.Card secondCard = DataHelper.Card.getSecondCardFor(user);
     private final int sumToTransfer = 350;
     private int initialBalanceFirstCard;
     private int initialBalanceSecondCard;
@@ -24,73 +26,61 @@ public class TransferBalanceTest {
         LoginPage validLogin = new LoginPage();
         VerificationPage verification = validLogin.validLogin(user);
         dashboard = verification.validVerify(user);
-
-        DataHelper.Card cardFirst = new DataHelper.Card(
-                DataHelper.Card.FIRST_CARD_NUMBER,
-                dashboard.getCardBalance(user.firstCardId())
-        );
-
-        DataHelper.Card cardSecond =  new DataHelper.Card(
-                DataHelper.Card.SECOND_CARD_NUMBER,
-                dashboard.getCardBalance(user.secondCardId())
-        );
-
-        user.setCard(cardFirst);
-        user.setCard(cardSecond);
     }
 
     @BeforeEach
     void setUp1() {
-        initialBalanceFirstCard = dashboard.getCardBalance(user.firstCardId());
-        initialBalanceSecondCard = dashboard.getCardBalance(user.secondCardId());
+        initialBalanceFirstCard = dashboard.getCardBalance(firstCard.getCardId());
+        initialBalanceSecondCard = dashboard.getCardBalance(secondCard.getCardId());
         initialSum = initialBalanceFirstCard + initialBalanceSecondCard;
     }
 
     @AfterEach
     void checkIfInitialSumStaysImmutable() {
-        Assertions.assertEquals(initialSum, dashboard.getCardBalance(user.firstCardId()) +
-                dashboard.getCardBalance(user.secondCardId()));
+        Assertions.assertEquals(initialSum,
+                dashboard.getCardBalance(firstCard.getCardId()) +
+                        dashboard.getCardBalance(secondCard.getCardId()));
     }
 
     @Test
     void shouldTransferMoneyFromSecondToFirstCard() {
-        var transfer = dashboard.transferBalance(user.firstCardId());
-        transfer.transferBalance(String.valueOf(sumToTransfer), user.getCard(1).getCardNumber());
+        var transfer = dashboard.transferBalance(firstCard.getCardId());
+        transfer.transferBalance(String.valueOf(sumToTransfer), secondCard.getCardNumber());
 
         Assertions.assertEquals(initialBalanceFirstCard + sumToTransfer,
-                dashboard.getCardBalance(user.firstCardId()));
+                dashboard.getCardBalance(firstCard.getCardId()));
         Assertions.assertEquals(initialBalanceSecondCard - sumToTransfer,
-                dashboard.getCardBalance(user.secondCardId()));
+                dashboard.getCardBalance(secondCard.getCardId()));
     }
 
     @Test
     void shouldTransferMoneyFromFirstToSecondCard() {
-        var transfer = dashboard.transferBalance(user.secondCardId());
-        transfer.transferBalance(String.valueOf(sumToTransfer), user.getCard(0).getCardNumber());
+        var transfer = dashboard.transferBalance(secondCard.getCardId());
+        transfer.transferBalance(String.valueOf(sumToTransfer), firstCard.getCardNumber());
 
         Assertions.assertEquals(initialBalanceFirstCard - sumToTransfer,
-                dashboard.getCardBalance(user.firstCardId()));
+                dashboard.getCardBalance(firstCard.getCardId()));
         Assertions.assertEquals(initialBalanceSecondCard + sumToTransfer,
-                dashboard.getCardBalance(user.secondCardId()));
+                dashboard.getCardBalance(secondCard.getCardId()));
     }
 
     @Test
     void shouldTransferCardBalance() {
-        var transfer = dashboard.transferBalance(user.secondCardId());
+        var transfer = dashboard.transferBalance(secondCard.getCardId());
         String amount = String.valueOf(initialBalanceFirstCard);
-        transfer.transferBalance(amount, user.getCard(0).getCardNumber());
+        transfer.transferBalance(amount, firstCard.getCardNumber());
 
-        Assertions.assertEquals(0, dashboard.getCardBalance(user.firstCardId()));
-        Assertions.assertEquals(dashboard.getCardBalance(user.secondCardId()),
+        Assertions.assertEquals(0, dashboard.getCardBalance(firstCard.getCardId()));
+        Assertions.assertEquals(dashboard.getCardBalance(secondCard.getCardId()),
                 initialBalanceFirstCard + initialBalanceSecondCard);
     }
 
     @Test
     void shouldNotTransferMoreThanCardBalance() {
-        var transfer = dashboard.transferBalance(user.secondCardId());
+        var transfer = dashboard.transferBalance(secondCard.getCardId());
         String amount = String.valueOf(initialBalanceFirstCard + 1);
-        transfer.transferBalance(amount, user.getCard(0).getCardNumber());
+        transfer.transferBalance(amount, firstCard.getCardNumber());
 
-        Assertions.assertTrue(dashboard.getCardBalance(user.firstCardId()) >= 0);
+        Assertions.assertTrue(dashboard.getCardBalance(firstCard.getCardId()) >= 0);
     }
 }
