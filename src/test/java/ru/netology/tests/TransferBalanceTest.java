@@ -11,8 +11,8 @@ import static com.codeborne.selenide.Selenide.open;
 public class TransferBalanceTest {
 
     private static DataHelper.AuthInfo user;
-    private final DataHelper.Card firstCard = DataHelper.Card.getFirstCardFor(user);
-    private final DataHelper.Card secondCard = DataHelper.Card.getSecondCardFor(user);
+    private final DataHelper.Card firstCard = DataHelper.getFirstCardFor(user);
+    private final DataHelper.Card secondCard = DataHelper.getSecondCardFor(user);
     private final int sumToTransfer = 350;
     private int initialBalanceFirstCard;
     private int initialBalanceSecondCard;
@@ -22,7 +22,7 @@ public class TransferBalanceTest {
     @BeforeAll
     static void setUp() {
         open("http://localhost:9999");
-        user = DataHelper.AuthInfo.getAuthInfo();
+        user = DataHelper.getAuthInfo();
         LoginPage validLogin = new LoginPage();
         VerificationPage verification = validLogin.validLogin(user);
         dashboard = verification.validVerify(user);
